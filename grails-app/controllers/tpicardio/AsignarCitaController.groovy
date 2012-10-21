@@ -4,6 +4,7 @@ import org.springframework.dao.DataIntegrityViolationException
 
 class AsignarCitaController{
 	static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
+	def springSecurityService
 
     def index() { 
 		redirect(action: "edit")
@@ -12,7 +13,7 @@ class AsignarCitaController{
     def edit() {
 		switch (request.method) {
 		case 'GET':
-	        def usuarioInstance = Usuario.get(1)
+	        def usuarioInstance = User.get(springSecurityService.principal.id)
 	        if (!usuarioInstance) {
 	            flash.message = message(code: 'default.not.found.message', args: [message(code: 'usuario.label', default: 'Usuario'), params.id])
 	            redirect action: 'show'
@@ -22,7 +23,7 @@ class AsignarCitaController{
 	        [usuarioInstance: usuarioInstance]
 			break
 		case 'POST':
-	        def usuarioInstance = Usuario.get(1)
+	        def usuarioInstance = User.get(springSecurityService.principal.id)
 	        if (!usuarioInstance) {
 	            flash.message = message(code: 'default.not.found.message', args: [message(code: 'usuario.label', default: 'Usuario'), params.id])
 	            redirect action: 'edit'
@@ -54,7 +55,7 @@ class AsignarCitaController{
     }
 	
 	def show() {
-		def usuarioInstance = Usuario.get(1)
+		def usuarioInstance = User.get(springSecurityService.principal.id)
 		if (!usuarioInstance) {
 			flash.message = message(code: 'default.not.found.message', args: [message(code: 'usuario.label', default: 'Usuario'), params.id])
 			redirect action: 'list'
@@ -71,7 +72,7 @@ class AsignarCitaController{
 
 
 	def delete() {
-		def usuarioInstance = Usuario.get(1)
+		def usuarioInstance = User.get(springSecurityService.principal.id)
 		if (!usuarioInstance) {
 			flash.message = message(code: 'default.not.found.message', args: [message(code: 'usuario.label', default: 'Usuario'), params.id])
 			redirect action: 'list'

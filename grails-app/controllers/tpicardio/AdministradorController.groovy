@@ -6,6 +6,7 @@ import grails.plugins.springsecurity.Secured
 class AdministradorController {
 
     static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
+	def adminRole = UserRole.findByAuthority("ROLE_ADMIN") ?: new UserRole(authority:"ROLE_ADMIN").save();
 
     def index() {
         redirect action: 'list', params: params
@@ -17,7 +18,7 @@ class AdministradorController {
         [administradorInstanceList: Administrador.list(params), administradorInstanceTotal: Administrador.count()]
     }
 
-	@Secured(['ROLE_ADMIN'])
+//	@Secured(['ROLE_ADMIN'])
     def create() {
 		switch (request.method) {
 		case 'GET':
@@ -25,10 +26,12 @@ class AdministradorController {
 			break
 		case 'POST':
 	        def administradorInstance = new Administrador(params)
+			administradorInstance.encodePassword();
 	        if (!administradorInstance.save(flush: true)) {
 	            render view: 'create', model: [administradorInstance: administradorInstance]
 	            return
 	        }
+			UserUserRole.create administradorInstance, adminRole, true
 
 			flash.message = message(code: 'default.created.message', args: [message(code: 'administrador.label', default: 'Administrador'), administradorInstance.id])
 	        redirect action: 'show', id: administradorInstance.id

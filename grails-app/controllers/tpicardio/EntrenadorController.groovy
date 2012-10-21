@@ -28,17 +28,13 @@ class EntrenadorController {
 		case 'POST':
 	        def entrenadorInstance = new Entrenador(params)
 			entrenadorInstance.encodePassword();
-			UserUserRole.create entrenadorInstance, userRole
 			
-			// tratando de hacer la creacion con el rol automaticamente 
-			// pero saca un error de NullPointerException en la 
-			// linea de UserUserRole.create entrenadorInstance, userRole 
-			
-	        if (!entrenadorInstance.save(flush: true)) {
+			if (!entrenadorInstance.save(flush: true)) {
 	            render view: 'create', model: [entrenadorInstance: entrenadorInstance]
 	            return
 	        }
 
+			UserUserRole.create entrenadorInstance, userRole, true
 			flash.message = message(code: 'default.created.message', args: [message(code: 'entrenador.label', default: 'Entrenador'), entrenadorInstance.id])
 	        redirect action: 'show', id: entrenadorInstance.id
 			break
