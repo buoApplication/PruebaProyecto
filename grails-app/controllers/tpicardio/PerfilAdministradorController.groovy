@@ -6,6 +6,7 @@ import grails.plugins.springsecurity.Secured
 class PerfilAdministradorController {
 
     static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
+	def springSecurityService
 
     def index() {
         redirect action: 'perfilAdministrador'
@@ -14,7 +15,7 @@ class PerfilAdministradorController {
 	def cambiarPassword(){
 		switch (request.method) {
 			case 'GET':
-				def administradorInstance = Administrador.get(3)
+				def administradorInstance = User.get(springSecurityService.principal.id)
 				if (!administradorInstance) {
 					flash.message = message(code: 'default.not.found.message', args: [message(code: 'administrador.label', default: 'Administrador'), params.id])
 					redirect action: 'list'
@@ -24,7 +25,7 @@ class PerfilAdministradorController {
 				[administradorInstance: administradorInstance]
 				break
 			case 'POST':
-				def administradorInstance = Administrador.get(3)
+				def administradorInstance = User.get(springSecurityService.principal.id)
 				if (!administradorInstance) {
 					flash.message = message(code: 'default.not.found.message', args: [message(code: 'administrador.label', default: 'Administrador'), params.id])
 					redirect action: 'list'
@@ -57,7 +58,7 @@ class PerfilAdministradorController {
 	
 	@Secured(['ROLE_ADMIN','IS_AUTHENTICATED_FULLY'])
 	def perfilAdministrador(){
-		def administradorInstance = Administrador.get(3)
+		def administradorInstance = User.get(springSecurityService.principal.id)
 		if (!administradorInstance) {
 			flash.message = message(code: 'default.not.found.message', args: [message(code: 'administrador.label', default: 'Administrador'), params.id])
 			redirect action: 'list'
@@ -75,7 +76,7 @@ class PerfilAdministradorController {
 	
 	@Secured(['ROLE_ADMIN'])
     def show() {
-        def administradorInstance = Administrador.get(3)
+        def administradorInstance = User.get(springSecurityService.principal.id)
         if (!administradorInstance) {
 			flash.message = message(code: 'default.not.found.message', args: [message(code: 'administrador.label', default: 'Administrador'), params.id])
             redirect action: 'list'

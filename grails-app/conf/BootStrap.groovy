@@ -10,8 +10,8 @@ class BootStrap {
 	def springSecurityService
 
     def init = { servletContext ->
-		def adminRole = UserRole.findByAuthority("ROLE_USER") ?: new UserRole(authority:"ROLE_USER").save();
-		def userRole = UserRole.findByAuthority("ROLE_ADMIN") ?: new UserRole(authority:"ROLE_ADMIN").save();
+		def userRole = UserRole.findByAuthority("ROLE_USER") ?: new UserRole(authority:"ROLE_USER").save();
+		def adminRole = UserRole.findByAuthority("ROLE_ADMIN") ?: new UserRole(authority:"ROLE_ADMIN").save();
 		def sessionRole = UserRole.findByAuthority("IS_AUTHENTICATED_FULLY") ?: new UserRole(authority:"IS_AUTHENTICATED_FULLY").save();
 		
 		def administrador = new Administrador(username:"nicolas",
@@ -21,6 +21,11 @@ class BootStrap {
 									nombre:"nombre Administrador",
 									apellido:"apellido",
 									correo:"administrador@unal.edu.co")
+		
+		//comente todo por que cuando se define un solo User, todos los atributos son validos
+		//y era para probar que se pudiera hacer un administrador, Si lo crea pero no lo reconoce al 
+		//momento de hacer LogIn
+		
 		
 //		def usuario = new Usuario(cedula:10,
 //								  edad:14,
@@ -46,7 +51,7 @@ class BootStrap {
 //		usuario.save()
 //		entrenador.save()
 		
-		UserUserRole.create administrador, userRole
+		UserUserRole.create administrador, adminRole
 //		UserUserRole.create usuario, sessionRole
 //		UserUserRole.create entrenador, userRole
 		

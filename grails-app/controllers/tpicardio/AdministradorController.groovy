@@ -11,7 +11,7 @@ class AdministradorController {
         redirect action: 'list', params: params
     }
 
-	@Secured(['ROLE_ADMIN'])
+//	@Secured(['ROLE_ADMIN'])
     def list() {
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
         [administradorInstanceList: Administrador.list(params), administradorInstanceTotal: Administrador.count()]

@@ -6,6 +6,8 @@ import grails.plugins.springsecurity.Secured
 class EntrenadorController {
 
     static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
+	
+	def userRole = UserRole.findByAuthority("ROLE_USER") ?: new UserRole(authority:"ROLE_USER").save();
 
     def index() {
         redirect action: 'list', params: params
@@ -17,7 +19,7 @@ class EntrenadorController {
     }
 
 	
-	@Secured(['ROLE_ADMIN'])
+//	@Secured(['ROLE_ADMIN'])
     def create() {
 		switch (request.method) {
 		case 'GET':
@@ -25,6 +27,13 @@ class EntrenadorController {
 			break
 		case 'POST':
 	        def entrenadorInstance = new Entrenador(params)
+			entrenadorInstance.encodePassword();
+			UserUserRole.create entrenadorInstance, userRole
+			
+			// tratando de hacer la creacion con el rol automaticamente 
+			// pero saca un error de NullPointerException en la 
+			// linea de UserUserRole.create entrenadorInstance, userRole 
+			
 	        if (!entrenadorInstance.save(flush: true)) {
 	            render view: 'create', model: [entrenadorInstance: entrenadorInstance]
 	            return

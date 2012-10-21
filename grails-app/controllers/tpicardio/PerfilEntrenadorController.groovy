@@ -6,6 +6,7 @@ import grails.plugins.springsecurity.Secured
 class PerfilEntrenadorController {
 
     static allowedMethods = [create: ['GET', 'POST'], edit: ['GET', 'POST'], delete: 'POST']
+	def springSecurityService
 
     def index() {
         redirect action: 'perfilEntrenador'
@@ -15,7 +16,7 @@ class PerfilEntrenadorController {
 	def cambiarPassword(){
 		switch (request.method) {
 			case 'GET':
-				def entrenadorInstance = Entrenador.get(2)
+				def entrenadorInstance = User.get(springSecurityService.principal.id)
 				if (!entrenadorInstance) {
 					flash.message = message(code: 'default.not.found.message', args: [message(code: 'entrenador.label', default: 'Entrenador'), params.id])
 					redirect action: 'list'
@@ -58,7 +59,7 @@ class PerfilEntrenadorController {
 	
 	@Secured(['ROLE_USER'])
 	def perfilEntrenador(){
-		def entrenadorInstance = Entrenador.get(2)
+		def entrenadorInstance = User.get(springSecurityService.principal.id)
 		if (!entrenadorInstance) {
 			flash.message = message(code: 'default.not.found.message', args: [message(code: 'entrenador.label', default: 'Entrenador'), params.id])
 			redirect action: 'list'
@@ -76,7 +77,7 @@ class PerfilEntrenadorController {
 
 	@Secured(['ROLE_USER'])
     def show() {
-        def entrenadorInstance = Entrenador.get(2)
+        def entrenadorInstance = User.get(springSecurityService.principal.id)
         if (!entrenadorInstance) {
 			flash.message = message(code: 'default.not.found.message', args: [message(code: 'entrenador.label', default: 'Entrenador'), params.id])
             redirect action: 'list'
